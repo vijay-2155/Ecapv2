@@ -136,6 +136,7 @@ function formatAttendanceReport(data) {
         );
     } else {
         lines.push(
+            "",
             `• 🧮 <b>Overall (present/total):</b> ${data.total_present}/${data.total_classes}`,
             "",
             `• 📈 <b>Percentage:</b> ${data.overall_percentage.toFixed(2)}% ${statusIcon}`,
@@ -150,16 +151,23 @@ function formatAttendanceReport(data) {
         if (isAboveThreshold && skippable > 0) {
             lines.push(`🛑 <b>Skippable:</b> You can miss <u><b>${skippable}</b></u> classes.`);
         } else if (!isAboveThreshold && required > 0) {
-            lines.push(`📚 <b>Required:</b> Attend <u>${required}</u> more classes to reach 75%.`);
+            lines.push(`📚 <b>Required:</b> Attend <b>${required}</b> more classes to reach 75%.`);
         }
     }
 
     // Today's Attendance
     if (data.todays_attendance && data.todays_attendance.length > 0) {
         lines.push("", "📅 <b>Today's Attendance:</b>", "━━━━━━━━━━━━━━━━━━━━━━━");
+        // Group by subject
+        const subjectMap = {};
         data.todays_attendance.forEach(entry => {
             const [subject, status] = entry.split(":").map(str => str.trim());
-            lines.push(`• <b>${subject}:</b> <b>${status}</b>`);
+            if (!subjectMap[subject]) subjectMap[subject] = [];
+            subjectMap[subject].push(status);
+        });
+        Object.entries(subjectMap).forEach(([subject, statuses]) => {
+            const allStatuses = statuses.flatMap(s => s.split(""));
+            lines.push(`• <b>${subject}:</b> <b>${allStatuses.join(" ")}</b>`);
         });
     } else {
         lines.push("", "📅 <b>Today's Attendance:</b>", "━━━━━━━━━━━━━━━━━━━━━━━");
@@ -184,8 +192,10 @@ function formatAttendanceReport(data) {
             }
         });
     }
-
-    lines.push("", "━━━━━━━━━━━━━━━━━━━━━━━");
+    lines.push("","━━━━━━━━━━━━━━━━━━━━━━━");
+    const now = new Date();
+    const istString = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
+    lines.push("Last Updated: " + istString + " (IST)");
     lines.push("🤖 <i>Smart Attendance Bot</i>");
 
     return lines.join("\n");
