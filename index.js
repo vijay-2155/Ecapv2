@@ -12,7 +12,7 @@ const axios = require("axios"); // Added axios for HTTP requests
 // Configuration with validation
 const config = {
   BOT_TOKEN:
-    process.env.BOT_TOKEN || "7535451388:AAHaVUEhz6QynDaE5kGle72xVJS5Zg0Ekzg",
+    process.env.BOT_TOKEN || "7709646266:AAGZU0JKnX_8sk068Hk2dHYLJe8-dPfrLQw",
   REDIS_URL: process.env.REDIS_URL || "redis://localhost:6379",
   PORT: parseInt(process.env.PORT) || 5000,
   NODE_ENV: process.env.NODE_ENV || "development",
